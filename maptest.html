@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>测试地图api</title>
+<body>
+    <p id="demo">1</p>
+    <div>
+        <div>浏览器定位</div>
+        <div>
+            latitude: <div id="ie-lat"></div>
+        </div>
+        <div>
+            longitude: <div id="ie-long"></div>
+        </div>
+        <div>
+            需要时长
+            <div id="time-ie"></div>
+        </div>
+    </div>
+    <div id="allmap">
+        <div>你的定位信息-百度地图</div>
+        <div>
+            latitude: <div id="latitude"></div>
+        </div>
+        <div>
+            longitude: <div id="longitude"></div>
+        </div>
+        <!-- <div>
+            prov: <div id="prov"></div>
+        </div>
+        <div>
+            city: <div id="city"></div>
+        </div>
+        <div>
+            district: <div id="district"></div>
+        </div> -->
+        <div>
+            需要时长
+            <div id="time-bmap"></div>
+        </div>
+        <div>
+            整体返回信息1
+            <div id="r"></div>
+        </div>
+        <div>
+            整体返回信息2
+            <div id="result"></div>
+        </div>
+    </div>
+    <script
+        type="text/javascript"
+        src="https://api.map.baidu.com/api?v=3.0&ak=BFN8iG3GYsPvdUPAIyjSaLGMQz8MFm3N"
+    ></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?type=webgl&v=1.0&s=1&ak=BFN8iG3GYsPvdUPAIyjSaLGMQz8MFm3N"></script>
+
+    <script>
+        const time1 = new Date().getTime();
+        function success(position) {
+            const lon = position.coords.longitude;
+		    const lat = position.coords.latitude;
+            const time2 = new Date().getTime();
+            document.getElementById('ie-lat').innerHTML = lat;
+            document.getElementById('ie-long').innerHTML = lon;
+            document.getElementById('time-ie').innerHTML = time2 - time1;
+        }
+        function error(err) {
+            console.log('浏览器定位 failed 状态  ', err);
+        }
+        if (!!navigator.geolocation) {
+            console.log('navigator.geolocation')
+            console.log(navigator.geolocation)
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+        // else {
+            const geolocation1 = new BMap.Geolocation();
+            geolocation1.enableSDKLocation();
+            geolocation1.getCurrentPosition(function(r) {
+                const time2 = new Date().getTime();
+                console.log('time2 - time1');
+                console.log(time2 - time1);
+                document.getElementById('time-bmap').innerHTML = time2 - time1;
+
+                if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                    // console.log('浏览器定位您的位置：' + r.point.lng + ',' + r.point.lat);
+                    // const myGeo = new BMapGL.Geocoder();
+                    // // 根据坐标得到地址描述
+                    // myGeo.getLocation(new BMapGL.Point(r.point.lng, r.point.lat), function(result) {
+                    //     let prov = '';
+                    //     let city = '';
+                    //     let district = '';
+                    //     if (result) {
+                    //         const address = result.addressComponents;
+                    //         prov = address.province;
+                    //         city = address.city;
+                    //         district = address.district;
+                    //     }
+
+                        document.getElementById('latitude').innerHTML = r.point.lat;
+                        document.getElementById('longitude').innerHTML = r.point.lng;
+                        // document.getElementById('prov').innerHTML = prov;
+                        // document.getElementById('city').innerHTML = city;
+                        // document.getElementById('district').innerHTML = district;
+                        document.getElementById('r').innerHTML = JSON.stringify(r);
+                        document.getElementById('result').innerHTML = JSON.stringify(result);
+                    // });
+                } else {
+                    console.log('浏览器定位 failed 状态  ' + this.getStatus());
+                }
+            });
+        // }
+
+    </script>
+</body>
+</html>
